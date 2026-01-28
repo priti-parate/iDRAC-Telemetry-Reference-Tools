@@ -4,7 +4,7 @@ ARG USERNAME=telemetry
 ARG GROUPNAME=telemetry
 ARG CMD
 
-FROM golang:1.24 AS builder
+FROM golang:1.24.11 AS builder
 
 ARG USER_ID
 ARG GROUP_ID
@@ -32,6 +32,8 @@ RUN useradd -l -u ${USER_ID} -g ${GROUPNAME} ${USERNAME}
 COPY internal /build/internal
 COPY cmd/${CMD} /build/cmd/${CMD}
 COPY go.* /build/
+
+RUN go mod tidy
 
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o app ./cmd/${CMD}
 
